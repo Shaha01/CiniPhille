@@ -1,0 +1,18 @@
+<template>
+  <main class="main">
+    <Media type="tv"/>
+  </main>
+</template>
+
+<script setup>
+
+import Media from "@/components/Media/Media.vue";
+import { onBeforeRouteUpdate } from "vue-router";
+import { inject } from "vue";
+
+const reload = inject('reload')
+
+onBeforeRouteUpdate((to, from) => {
+  reload()
+});
+</script>

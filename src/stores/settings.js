@@ -1,0 +1,127 @@
+import { defineStore } from 'pinia'
+import { ref, computed } from 'vue'
+
+const translations = {
+  'en-US': {
+    main: 'Main',
+    films: 'Films',
+    serials: 'Serials',
+    favorites: 'Favorites',
+    allFilms: 'All films',
+    allSerials: 'All serials',
+    inMainRoles: 'In the main roles',
+    recommendations: 'Recommendations',
+    watchTrailer: 'Watch the trailer',
+    loading: 'Loading...',
+    noTrailer: 'Trailer is not available for this title.',
+    getMore: 'Get more',
+    noDescription: 'No description',
+    next: 'Next',
+    budget: 'Budget',
+    fees: 'Fees',
+    status: 'Status',
+    originalTitle: 'Original title',
+    seasons: 'Seasons',
+    episodes: 'Episodes',
+    rating: 'Rating',
+    unknown: 'Unknown',
+    searchPlaceholder: 'Search films and serials...',
+    nothingFound: 'Nothing found for',
+    all: 'All',
+    allGenres: 'All genres',
+    allYears: 'All years',
+    sortPopular: 'By popularity',
+    sortRating: 'By rating',
+    sortNewest: 'By release date',
+    loadMore: 'Load more',
+    addToFavorites: 'In favorites',
+    removeFromFavorites: 'Saved',
+    emptyFavorites: 'Your favorites list is empty. Add films or serials by clicking the heart icon!',
+    errorTitle: 'Failed to load data from TMDB',
+    errorHint: 'Check your internet connection (or VPN if TMDB is restricted in your region) and try again.',
+    retry: 'Retry',
+    notFoundTitle: 'Page not found',
+    notFoundText: 'The page you are looking for does not exist.',
+    backHome: 'Back to Home',
+    biography: 'Biography',
+    noBiography: 'Biography is not available.',
+    birthday: 'Birthday',
+    placeOfBirth: 'Place of birth',
+    knownFor: 'Filmography'
+  },
+  'ru-RU': {
+    main: 'Главная',
+    films: 'Фильмы',
+    serials: 'Сериалы',
+    favorites: 'Избранное',
+    allFilms: 'Все фильмы',
+    allSerials: 'Все сериалы',
+    inMainRoles: 'В главных ролях',
+    recommendations: 'Рекомендации',
+    watchTrailer: 'Смотреть трейлер',
+    loading: 'Загрузка...',
+    noTrailer: 'Трейлер для этого проекта недоступен.',
+    getMore: 'Подробнее',
+    noDescription: 'Описание отсутствует',
+    next: 'Далее',
+    budget: 'Бюджет',
+    fees: 'Сборы',
+    status: 'Статус',
+    originalTitle: 'Оригинальное название',
+    seasons: 'Сезонов',
+    episodes: 'Серий',
+    rating: 'Рейтинг',
+    unknown: 'Неизвестно',
+    searchPlaceholder: 'Поиск фильмов и сериалов...',
+    nothingFound: 'Ничего не найдено по запросу',
+    all: 'Все',
+    allGenres: 'Все жанры',
+    allYears: 'Все годы',
+    sortPopular: 'По популярности',
+    sortRating: 'По рейтингу',
+    sortNewest: 'По дате выхода',
+    loadMore: 'Загрузить ещё',
+    addToFavorites: 'В избранное',
+    removeFromFavorites: 'В избранном',
+    emptyFavorites: 'Список избранного пуст. Добавляйте фильмы и сериалы кнопкой с сердечком!',
+    errorTitle: 'Не удалось загрузить данные с TMDB',
+    errorHint: 'Проверьте подключение к интернету (или включите VPN, если TMDB недоступен) и попробуйте снова.',
+    retry: 'Повторить',
+    notFoundTitle: 'Страница не найдена',
+    notFoundText: 'Запрашиваемая страница не существует.',
+    backHome: 'На главную',
+    biography: 'Биография',
+    noBiography: 'Биография отсутствует.',
+    birthday: 'Дата рождения',
+    placeOfBirth: 'Место рождения',
+    knownFor: 'Фильмография'
+  }
+}
+
+export const useSettings = defineStore('settings', () => {
+  const lang = ref(localStorage.getItem('ciniphile_lang') || 'ru-RU')
+
+  const setLang = (newLang) => {
+    lang.value = newLang
+    localStorage.setItem('ciniphile_lang', newLang)
+  }
+
+  const toggleLang = () => {
+    setLang(lang.value === 'ru-RU' ? 'en-US' : 'ru-RU')
+  }
+
+  const langShort = computed(() => (lang.value === 'ru-RU' ? 'RU' : 'EN'))
+
+  const t = (key) => {
+    return translations[lang.value]?.[key] || translations['en-US'][key] || key
+  }
+
+  return {
+    lang,
+    langShort,
+    setLang,
+    toggleLang,
+    t
+  }
+})
+
