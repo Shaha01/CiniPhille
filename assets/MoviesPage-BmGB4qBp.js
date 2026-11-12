@@ -1,1 +1,0 @@
-import{C as e}from"./Catalog-DB41aOVO.js";import{c as o,a,o as t}from"./index-CtJldKNO.js";import"./CatalogItem-Cc3FzdXj.js";const s={class:"main"},p={__name:"MoviesPage",setup(r){return(c,m)=>(t(),o("div",s,[a(e,{type:"movie"})]))}};export{p as default};

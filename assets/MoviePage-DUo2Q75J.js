@@ -1,0 +1,1 @@
+import{_ as t}from"./Media-pW-YNAUy.js";import{G as s,c as r,a as c,H as n,o as _}from"./index-D0Bbzomp.js";const m={class:"main"},l={__name:"MoviePage",setup(i){const e=n("reload");return s((o,a)=>{e()}),(o,a)=>(_(),r("main",m,[c(t,{type:"movie"})]))}};export{l as default};

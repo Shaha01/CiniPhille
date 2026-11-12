@@ -13,20 +13,20 @@
             <img :src="closeIcon" alt="svg">
           </button>
 
-          <li v-for="item in links" :key="item.url">
-            <router-link @click="burger = false" :to="item.url" class="nav__container-list-link">
-              {{ item.name }}
+          <li v-for="item in links" :key="item.url" class="nav__item">
+            <router-link @click="burger = false" :to="item.url" class="nav__container-list-link nav__link-inline">
+              <span>{{ item.name }}</span>
               <span v-if="item.badge" class="nav__badge">{{ item.badge }}</span>
             </router-link>
           </li>
 
-          <li>
+          <li class="nav__item">
             <router-link @click="burger = false" to="/search" class="nav__container-list-link">
               <img :src="searchIcon" alt="svg">
             </router-link>
           </li>
 
-          <li>
+          <li class="nav__item nav__item--lang">
             <button type="button" class="nav__lang-btn" @click="settings.toggleLang">
               {{ settings.langShort }}
             </button>
@@ -77,6 +77,22 @@ onUnmounted(() => {
 
 <style src="./Navbar.scss"></style>
 <style lang="scss" scoped>
+.nav__item {
+  display: flex;
+  align-items: center;
+  height: 100%;
+
+  @media (max-width: 800px) {
+    height: auto;
+    justify-content: center;
+  }
+}
+
+.nav__link-inline {
+  flex-direction: row;
+  gap: 8px;
+}
+
 .nav__badge {
   display: inline-flex;
   align-items: center;
@@ -84,29 +100,36 @@ onUnmounted(() => {
   min-width: 20px;
   height: 20px;
   padding: 0 6px;
-  margin-left: 6px;
-  border-radius: 10px;
+  border-radius: 999px;
   background: #149a03;
   color: #fff;
+  font-family: 'Montserrat', sans-serif;
   font-size: 12px;
   font-weight: 700;
+  line-height: 1;
 }
 
 .nav__lang-btn {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 8px;
-  padding: 5px 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 0 10px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
   font-family: 'Raleway', sans-serif;
   font-size: 14px;
   font-weight: 700;
+  letter-spacing: 0.5px;
   cursor: pointer;
-  transition: background 0.2s, border-color 0.2s;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
 
   &:hover {
-    background: #149a03;
+    color: #fff;
     border-color: #149a03;
+    background: rgba(20, 154, 3, 0.2);
   }
 }
 </style>
