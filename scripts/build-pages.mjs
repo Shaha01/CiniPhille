@@ -15,3 +15,4 @@ if (fs.existsSync('dist/favicon.ico')) {
 }
 
 console.log('GitHub Pages root build updated successfully.')
+

@@ -1,5 +1,5 @@
 <template>
-  <div class="nav" :class="{active: scrolled > 150}">
+  <div class="nav" :class="{active: isScrolled}">
     <div class="container">
       <div class="nav__container">
         <router-link to="/" class="logo">
@@ -57,10 +57,13 @@ const links = computed(() => [
 ]);
 
 const burger = ref(false);
-const scrolled = ref(0);
+const isScrolled = ref(false);
 
 const onScroll = () => {
-  scrolled.value = window.scrollY;
+  const next = window.scrollY > 150;
+  if (isScrolled.value !== next) {
+    isScrolled.value = next;
+  }
 };
 
 onMounted(() => {

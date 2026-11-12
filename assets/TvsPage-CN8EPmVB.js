@@ -1,1 +1,0 @@
-import{C as e}from"./Catalog-UOGro2Us.js";import{c as t,a,o}from"./index-C1wUTRCe.js";import"./CatalogItem-CnspvuOB.js";const s={class:"main"},i={__name:"TvsPage",setup(r){return(c,_)=>(o(),t("div",s,[a(e,{type:"tv"})]))}};export{i as default};

@@ -1,1 +1,0 @@
-import{_ as t}from"./Media-Dikk_s41.js";import{G as s,c as r,a as c,H as n,o as _}from"./index-C1wUTRCe.js";const m={class:"main"},l={__name:"MoviePage",setup(i){const e=n("reload");return s((o,a)=>{e()}),(o,a)=>(_(),r("main",m,[c(t,{type:"movie"})]))}};export{l as default};
