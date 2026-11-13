@@ -1,53 +1,45 @@
 <template>
-  <div class="main__search">
-    <div class="container">
-      <div class="search-bar">
+  <section class="page search">
+    <div class="wrap">
+      <div class="sector mono rise"><span>SRCH</span><i></i><b>{{ settings.t('searchLabel') }}</b></div>
+
+      <label class="search__field rise rise-2">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg>
         <input
-          class="main__search-input"
+          ref="input"
+          class="search__input"
           :placeholder="settings.t('searchPlaceholder')"
-          type="text"
+          type="search"
+          autocomplete="off"
+          spellcheck="false"
           v-model="text"
         >
-        <button
-          v-if="text"
-          type="button"
-          class="search-bar__clear"
-          @click="clearSearch"
-        >
-          ✕
+        <button v-if="text" type="button" class="search__clear" :aria-label="settings.t('close')" @click="clearSearch">
+          <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
         </button>
-      </div>
+      </label>
 
-      <div v-if="searchStore.result && searchStore.result.length" class="search-tabs">
-        <button
-          type="button"
-          class="search-tabs__btn"
-          :class="{ active: filterType === 'all' }"
-          @click="filterType = 'all'"
-        >
-          {{ settings.t('all') }}
-        </button>
-        <button
-          type="button"
-          class="search-tabs__btn"
-          :class="{ active: filterType === 'movie' }"
-          @click="filterType = 'movie'"
-        >
-          {{ settings.t('films') }}
-        </button>
-        <button
-          type="button"
-          class="search-tabs__btn"
-          :class="{ active: filterType === 'tv' }"
-          @click="filterType = 'tv'"
-        >
-          {{ settings.t('serials') }}
-        </button>
+      <div class="search__bar rise rise-3">
+        <p class="mono muted">
+          <template v-if="searchStore.result && text.trim()">
+            <b class="search__count">{{ filteredResults.length }}</b> {{ settings.t('results') }}
+          </template>
+          <template v-else>{{ settings.t('searchHint') }}</template>
+        </p>
+        <div v-if="searchStore.result && searchStore.result.length" class="tabs">
+          <button
+            v-for="t in tabs"
+            :key="t.value"
+            type="button"
+            :class="{ 'is-active': filterType === t.value }"
+            @click="filterType = t.value"
+          >{{ t.label }}</button>
+        </div>
       </div>
 
       <Loader v-if="searchStore.loading" />
 
-      <div class="main__search-list" v-else-if="filteredResults.length">
+      <div class="grid" v-else-if="filteredResults.length">
         <SearchContent
           v-for="item in filteredResults"
           :key="`${item.media_type}-${item.id}`"
@@ -55,19 +47,19 @@
         />
       </div>
 
-      <p
+      <div
         v-else-if="text.trim() && searchStore.result && filteredResults.length === 0"
-        class="search-empty"
+        class="search__empty"
       >
-        {{ settings.t('nothingFound') }} "{{ text }}"
-      </p>
+        <b class="search__empty-big" aria-hidden="true">DNF</b>
+        <p>{{ settings.t('nothingFound') }} «{{ text }}»</p>
+      </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script setup>
-import { computed, ref, watch, onUnmounted } from "vue";
-import './Search.scss';
+import { computed, ref, watch, onMounted, onUnmounted } from "vue";
 import SearchContent from "@/components/Search/SearchContent.vue";
 import Loader from "@/components/UI/Loader.vue";
 import { useSearch } from "@/stores/search.js";
@@ -77,6 +69,13 @@ const searchStore = useSearch();
 const settings = useSettings();
 const text = ref('');
 const filterType = ref('all');
+const input = ref(null);
+
+const tabs = computed(() => [
+  { value: 'all', label: settings.t('all') },
+  { value: 'movie', label: settings.t('films') },
+  { value: 'tv', label: settings.t('serials') }
+]);
 
 const filteredResults = computed(() => {
   const list = searchStore.result || [];
@@ -89,6 +88,7 @@ let timer = null;
 const clearSearch = () => {
   text.value = '';
   searchStore.result = null;
+  input.value?.focus();
 };
 
 watch(text, (val) => {
@@ -103,60 +103,112 @@ watch(text, (val) => {
   }, 450);
 });
 
+onMounted(() => {
+  searchStore.result = null;
+  input.value?.focus();
+});
+
 onUnmounted(() => {
   clearTimeout(timer);
 });
 </script>
 
 <style lang="scss" scoped>
-.search-bar {
-  position: relative;
+.search {
+  &__field {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: clamp(12px, 2vw, 24px);
+    padding: 6px 0 18px;
+    border-bottom: 2px solid var(--line-2);
+    transition: border-color .3s;
 
-  &__clear {
-    position: absolute;
-    right: 18px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: none;
-    background: rgba(0, 0, 0, 0.15);
-    color: #141414;
-    font-size: 16px;
-    cursor: pointer;
-  }
-}
+    &:focus-within { border-color: var(--neon); }
 
-.search-tabs {
-  display: flex;
-  gap: 10px;
-  margin-top: 20px;
-
-  &__btn {
-    background: rgba(255, 255, 255, 0.08);
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-    padding: 8px 18px;
-    font-family: 'Raleway', sans-serif;
-    font-size: 15px;
-    cursor: pointer;
-    transition: all 0.2s;
-
-    &.active,
-    &:hover {
-      background: #149a03;
-      border-color: #149a03;
+    > svg {
+      width: clamp(28px, 4vw, 56px);
+      height: clamp(28px, 4vw, 56px);
+      flex: none;
+      fill: none;
+      stroke: var(--neon);
+      stroke-width: 1.6;
     }
   }
-}
 
-.search-empty {
-  color: #fff;
-  font-family: 'Raleway', sans-serif;
-  font-size: 18px;
-  margin-top: 40px;
-  text-align: center;
+  &__input {
+    flex: 1;
+    min-width: 0;
+    font-family: var(--f-display);
+    font-weight: 800;
+    font-size: clamp(26px, 5vw, 76px);
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+    caret-color: var(--neon);
+
+    &::placeholder {
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(255, 255, 255, .22);
+    }
+
+    &::-webkit-search-cancel-button { display: none; }
+  }
+
+  &__clear {
+    width: 46px;
+    height: 46px;
+    flex: none;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    border: 1px solid var(--line-2);
+    transition: border-color .3s, transform .4s var(--ease);
+
+    svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+
+    &:hover {
+      border-color: var(--neon);
+      transform: rotate(90deg);
+    }
+  }
+
+  &__bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin: 22px 0 clamp(28px, 4vw, 44px);
+  }
+
+  &__count {
+    color: var(--neon);
+    font-family: var(--f-display);
+    font-size: 16px;
+  }
+
+  &__empty {
+    display: grid;
+    gap: 10px;
+    justify-items: start;
+    padding: 40px 0;
+    color: var(--text-2);
+  }
+
+  &__empty-big {
+    font-family: var(--f-display);
+    font-weight: 900;
+    font-size: clamp(80px, 16vw, 220px);
+    line-height: .85;
+    letter-spacing: -0.06em;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--neon);
+  }
 }
 </style>

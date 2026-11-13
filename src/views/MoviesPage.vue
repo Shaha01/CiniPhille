@@ -1,7 +1,5 @@
 <template>
-  <div class="main">
-    <Catalog type="movie" />
-  </div>
+  <Catalog type="movie" />
 </template>
 
 <script setup>

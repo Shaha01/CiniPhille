@@ -1,52 +1,42 @@
 <template>
-  <main class="main">
-    <div class="main__catalog favorites-page">
-      <div class="container">
-        <div class="favorites-page__header">
-          <h2 class="main__catalog-title">
-            {{ settings.t('favorites') }} ({{ filteredItems.length }})
-          </h2>
-          <div class="favorites-page__tabs" v-if="favorites.items.length">
+  <main class="page favs">
+    <div class="wrap">
+      <div class="sector mono rise"><span>BOX</span><i></i><b>{{ settings.t('favorites') }}</b></div>
+
+      <div class="section__head">
+        <h1 class="h1 rise rise-2">{{ settings.t('favorites') }}<em>.</em></h1>
+        <div class="favs__side rise rise-3">
+          <p class="mono muted"><b class="favs__count">{{ filteredItems.length }}</b> {{ settings.t('saved') }}</p>
+          <div class="tabs" v-if="favorites.items.length">
             <button
+              v-for="t in tabs"
+              :key="t.value"
               type="button"
-              class="favorites-page__tab"
-              :class="{ active: filterType === 'all' }"
-              @click="filterType = 'all'"
-            >
-              {{ settings.t('all') }}
-            </button>
-            <button
-              type="button"
-              class="favorites-page__tab"
-              :class="{ active: filterType === 'movie' }"
-              @click="filterType = 'movie'"
-            >
-              {{ settings.t('films') }}
-            </button>
-            <button
-              type="button"
-              class="favorites-page__tab"
-              :class="{ active: filterType === 'tv' }"
-              @click="filterType = 'tv'"
-            >
-              {{ settings.t('serials') }}
-            </button>
+              :class="{ 'is-active': filterType === t.value }"
+              @click="filterType = t.value"
+            >{{ t.label }}</button>
           </div>
         </div>
+      </div>
 
-        <div class="main__catalog-list" v-if="filteredItems.length">
-          <CatalogItem
-            v-for="item in filteredItems"
-            :key="`${item.media_type}-${item.id}`"
-            :item="item"
-            :type="item.media_type"
-          />
-        </div>
+      <TransitionGroup v-if="filteredItems.length" name="list" tag="div" class="grid">
+        <CatalogItem
+          v-for="item in filteredItems"
+          :key="`${item.media_type}-${item.id}`"
+          :item="item"
+          :type="item.media_type"
+          show-type
+        />
+      </TransitionGroup>
 
-        <div v-else class="favorites-page__empty">
+      <div v-else class="state">
+        <div class="state__box rise">
+          <span class="mono muted">PIT LANE · EMPTY</span>
+          <h3 class="h3">{{ settings.t('favorites') }}: 0</h3>
           <p>{{ settings.t('emptyFavorites') }}</p>
-          <router-link to="/movie" class="favorites-page__btn">
-            {{ settings.t('allFilms') }}
+          <router-link to="/movie" class="btn btn--primary">
+            <span>{{ settings.t('allFilms') }}</span>
+            <svg class="arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </router-link>
         </div>
       </div>
@@ -64,6 +54,12 @@ const favorites = useFavorites()
 const settings = useSettings()
 const filterType = ref('all')
 
+const tabs = computed(() => [
+  { value: 'all', label: settings.t('all') },
+  { value: 'movie', label: settings.t('films') },
+  { value: 'tv', label: settings.t('serials') }
+])
+
 const filteredItems = computed(() => {
   if (filterType.value === 'all') return favorites.items
   return favorites.items.filter((i) => i.media_type === filterType.value)
@@ -71,61 +67,24 @@ const filteredItems = computed(() => {
 </script>
 
 <style lang="scss" scoped>
-.favorites-page {
-  min-height: 75vh;
-
-  &__header {
+.favs {
+  &__side {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
     gap: 16px;
-    margin-bottom: 10px;
   }
 
-  &__tabs {
-    display: flex;
-    gap: 10px;
-  }
-
-  &__tab {
-    background: rgba(255, 255, 255, 0.08);
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-    padding: 8px 18px;
-    font-family: 'Raleway', sans-serif;
-    font-size: 15px;
-    cursor: pointer;
-    transition: all 0.2s;
-
-    &.active,
-    &:hover {
-      background: #149a03;
-      border-color: #149a03;
-    }
-  }
-
-  &__empty {
-    margin-top: 60px;
-    text-align: center;
-    color: rgba(255, 255, 255, 0.8);
-    font-family: 'Raleway', sans-serif;
-    font-size: 18px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 24px;
-  }
-
-  &__btn {
-    background: #149a03;
-    color: #fff;
-    padding: 12px 28px;
-    border-radius: 10px;
-    font-weight: 700;
+  &__count {
+    color: var(--neon);
+    font-family: var(--f-display);
     font-size: 16px;
   }
-}
-</style>
 
+  .state { min-height: 40vh; place-items: start; }
+}
+
+.list-enter-active, .list-leave-active { transition: opacity .4s var(--ease), transform .4s var(--ease); }
+.list-enter-from, .list-leave-to { opacity: 0; transform: scale(.94); }
+.list-move { transition: transform .5s var(--ease); }
+</style>

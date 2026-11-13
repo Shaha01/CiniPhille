@@ -1,34 +1,42 @@
 <template>
-  <button type="button" class="trailer" @click="openTrailer">
-    <img src="@/assets/images/play.png" alt="svg" />
-    <span class="trailer__text">
-      {{ loading ? settings.t('loading') : settings.t('watchTrailer') }}
-    </span>
+  <button type="button" class="btn" :class="primary ? 'btn--primary' : 'btn--ghost'" :disabled="loading" @click="openTrailer">
+    <svg class="fill" viewBox="0 0 24 24"><path d="M7 4v16l13-8z"/></svg>
+    <span>{{ loading ? settings.t('loading') : settings.t('watchTrailer') }}</span>
   </button>
 
   <Teleport to="body">
-    <div v-if="isOpen" class="trailer-modal" @click.self="closeTrailer">
-      <div class="trailer-modal__content">
-        <button type="button" class="trailer-modal__close" @click="closeTrailer">✕</button>
-        <iframe
-          v-if="videoKey"
-          class="trailer-modal__iframe"
-          :src="`https://www.youtube.com/embed/${videoKey}?autoplay=1`"
-          title="Trailer"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen
-        ></iframe>
-        <div v-else class="trailer-modal__empty">
-          {{ settings.t('noTrailer') }}
+    <Transition name="modal">
+      <div v-if="isOpen" class="modal" @click.self="closeTrailer">
+        <button type="button" class="modal__close" :aria-label="settings.t('close')" @click="closeTrailer">
+          <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+        <div class="modal__panel trailer">
+          <div class="trailer__bar mono">
+            <span class="trailer__rec"><i></i>REPLAY</span>
+            <span class="muted">{{ settings.t('watchTrailer') }}</span>
+          </div>
+          <div class="trailer__screen">
+            <iframe
+              v-if="videoKey"
+              :src="`https://www.youtube.com/embed/${videoKey}?autoplay=1&rel=0`"
+              title="Trailer"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            ></iframe>
+            <div v-else class="trailer__empty">
+              <b class="h3">NO SIGNAL</b>
+              <p class="muted">{{ settings.t('noTrailer') }}</p>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </Transition>
   </Teleport>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onUnmounted } from 'vue'
 import axios from 'axios'
 import { apiKey } from '@/apiUrl.js'
 import { useSettings } from '@/stores/settings.js'
@@ -41,7 +49,8 @@ const props = defineProps({
   id: {
     type: [Number, String],
     default: null
-  }
+  },
+  primary: Boolean
 })
 
 const settings = useSettings()
@@ -53,6 +62,10 @@ const pickTrailer = (videos) =>
   videos.find((v) => v.site === 'YouTube' && v.type === 'Trailer') ||
   videos.find((v) => v.site === 'YouTube' && v.type === 'Teaser') ||
   videos.find((v) => v.site === 'YouTube')
+
+const onKey = (e) => {
+  if (e.key === 'Escape') closeTrailer()
+}
 
 const openTrailer = async () => {
   if (!props.id || loading.value) return
@@ -70,74 +83,71 @@ const openTrailer = async () => {
       trailer = pickTrailer(fallbackRes.data?.results || [])
     }
     videoKey.value = trailer ? trailer.key : null
-    isOpen.value = true
   } catch (error) {
     console.error('Error loading trailer:', error)
-    isOpen.value = true
   } finally {
     loading.value = false
+    isOpen.value = true
+    window.addEventListener('keydown', onKey)
   }
 }
 
 const closeTrailer = () => {
   isOpen.value = false
   videoKey.value = null
+  window.removeEventListener('keydown', onKey)
 }
+
+onUnmounted(() => window.removeEventListener('keydown', onKey))
 </script>
 
 <style lang="scss" scoped>
+.btn:disabled { opacity: .7; cursor: progress; }
+
 .trailer {
-  border: none;
-  cursor: pointer;
-}
+  width: min(100%, 1100px);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  background: var(--bg-2);
+  overflow: hidden;
+  box-shadow: 0 40px 120px -30px rgba(255, 42, 61, .45);
 
-.trailer-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  background: rgba(0, 0, 0, 0.85);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-
-  &__content {
-    position: relative;
-    width: 100%;
-    max-width: 900px;
-    aspect-ratio: 16 / 9;
-    background: #141414;
-    border-radius: 12px;
-    overflow: hidden;
+  &__bar {
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 16px;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--line);
   }
 
-  &__close {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    z-index: 2;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: none;
-    background: rgba(0, 0, 0, 0.7);
-    color: #fff;
-    font-size: 18px;
-    cursor: pointer;
+  &__rec {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--neon);
+
+    i {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--neon);
+      box-shadow: 0 0 8px var(--neon);
+      animation: blink 1.2s infinite;
+    }
   }
 
-  &__iframe {
-    width: 100%;
-    height: 100%;
+  &__screen {
+    aspect-ratio: 16 / 9;
+    background: #000;
+    display: grid;
+    place-items: center;
+
+    iframe { width: 100%; height: 100%; }
   }
 
   &__empty {
-    color: #fff;
-    font-family: 'Raleway', sans-serif;
-    font-size: 18px;
+    display: grid;
+    gap: 10px;
     text-align: center;
     padding: 24px;
   }

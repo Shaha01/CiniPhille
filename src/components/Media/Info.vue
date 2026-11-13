@@ -1,10 +1,15 @@
 <template>
-  <div class="main__info">
-    <div class="main__info-item" v-for="item in info" :key="item.name">
-      <span class="main__info-item-name">{{ item.name }}</span>
-      <span class="main__info-item-text">{{ item.text }}</span>
+  <section class="section info">
+    <div class="wrap">
+      <div class="sector mono"><span>S1</span><i></i><b>{{ settings.t('details') }}</b></div>
+      <div class="pitwall" :style="{ '--cols': info.length }">
+        <div class="pitwall__cell" v-for="row in info" :key="row.name">
+          <span class="mono">{{ row.name }}</span>
+          <b :class="{ 'is-accent': row.accent }">{{ row.text }}</b>
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script setup>
@@ -24,43 +29,25 @@ const formatCurrency = (val) => {
 };
 
 const info = computed(() => {
+  const unknown = settings.t('unknown');
   if (props.type === 'tv' || props.item?.number_of_seasons !== undefined) {
     return [
-      {
-        name: settings.t('seasons'),
-        text: props.item?.number_of_seasons || settings.t('unknown')
-      },
-      {
-        name: settings.t('episodes'),
-        text: props.item?.number_of_episodes || settings.t('unknown')
-      },
-      {
-        name: settings.t('status'),
-        text: props.item?.status || settings.t('unknown')
-      },
-      {
-        name: settings.t('originalTitle'),
-        text: props.item?.original_name || props.item?.original_title || settings.t('unknown')
-      }
+      { name: settings.t('seasons'), text: props.item?.number_of_seasons || unknown, accent: true },
+      { name: settings.t('episodes'), text: props.item?.number_of_episodes || unknown },
+      { name: settings.t('status'), text: props.item?.status || unknown },
+      { name: settings.t('originalTitle'), text: props.item?.original_name || props.item?.original_title || unknown }
     ];
   }
   return [
-    {
-      name: settings.t('budget'),
-      text: formatCurrency(props.item?.budget)
-    },
-    {
-      name: settings.t('fees'),
-      text: formatCurrency(props.item?.revenue)
-    },
-    {
-      name: settings.t('status'),
-      text: props.item?.status || settings.t('unknown')
-    },
-    {
-      name: settings.t('originalTitle'),
-      text: props.item?.original_title || props.item?.original_name || settings.t('unknown')
-    }
+    { name: settings.t('budget'), text: formatCurrency(props.item?.budget) },
+    { name: settings.t('fees'), text: formatCurrency(props.item?.revenue), accent: true },
+    { name: settings.t('status'), text: props.item?.status || unknown },
+    { name: settings.t('originalTitle'), text: props.item?.original_title || props.item?.original_name || unknown }
   ];
 });
 </script>
+
+<style lang="scss" scoped>
+.info { padding-top: 0; }
+.is-accent { color: var(--yellow); }
+</style>

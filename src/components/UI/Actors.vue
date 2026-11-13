@@ -1,13 +1,16 @@
 <template>
-  <div class="actors" v-if="actors && actors.length">
+  <div class="cast" v-if="actors && actors.length">
     <router-link
       v-for="actor in actors"
       :key="actor.id"
       :to="`/person/${actor.id}`"
-      class="actors__item"
+      class="cast__item"
     >
-      <img v-lazy="getImageUrl(actor.profile_path, false)" :alt="actor.name">
-      <span>{{ actor.name }}</span>
+      <img v-lazy="getImageUrl(actor.profile_path, 'w185')" :alt="actor.name">
+      <span>
+        {{ actor.name }}
+        <small v-if="actor.character">{{ actor.character }}</small>
+      </span>
     </router-link>
   </div>
 </template>
@@ -50,39 +53,3 @@ const actors = computed(() => {
   return [];
 });
 </script>
-
-<style lang="scss" scoped>
-  .actors {
-    max-width: 450px;
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    &__item {
-      background: rgba(20, 20, 20, 0.5);
-      border: 1px solid #ffffff;
-      border-radius: 25px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding-right: 15px;
-      transition: border-color 0.2s, transform 0.2s;
-      &:hover {
-        border-color: #149a03;
-        transform: translateY(-2px);
-      }
-      & img {
-        width: 45px;
-        height: 50px;
-        border-radius: 50%;
-        object-fit: cover;
-      }
-      & span {
-        font-size: 16px;
-        line-height: 188%;
-        font-family: 'Raleway';
-        color: white;
-      }
-    }
-  }
-</style>

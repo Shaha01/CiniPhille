@@ -1,7 +1,5 @@
 <template>
-  <main class="main">
-    <Search />
-  </main>
+  <Search />
 </template>
 
 <script setup>

@@ -1,0 +1,1 @@
+import{_ as a}from"./Media-B744gPnT.js";import{C as r,c,D as s,o as _}from"./index-kbp61r6-.js";const f={__name:"TvPage",setup(n){const e=s("reload");return r((o,t)=>{e()}),(o,t)=>(_(),c(a,{type:"tv"}))}};export{f as default};

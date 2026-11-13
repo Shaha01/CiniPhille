@@ -1,16 +1,15 @@
 <template>
   <ErrorState v-if="itemStore.error" @retry="loadData" />
-  <div class="main__media" v-else-if="item">
+  <main class="media" v-else-if="item">
     <Intro :type="type" :item="item"/>
     <Info :type="type" :item="item"/>
     <Rec :type="type" :rec="rec"/>
-  </div>
+  </main>
   <Loader v-else/>
 </template>
 
 <script setup>
 import Intro from "@/components/Media/Intro.vue";
-import '@/components/Media/Media.scss';
 import { useItemId } from "@/stores/itemId.js";
 import { useRoute } from 'vue-router';
 import { computed, onBeforeMount, watch } from "vue";
@@ -57,7 +56,7 @@ const rec = computed(() => {
         ? recStore.recomTv
         : '';
   if (array) {
-    return array.slice(0, 4);
+    return array.slice(0, 12);
   }
   return [];
 });

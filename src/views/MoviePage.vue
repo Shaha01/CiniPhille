@@ -1,7 +1,5 @@
 <template>
-  <main class="main">
-    <Media type="movie"/>
-  </main>
+  <Media type="movie"/>
 </template>
 
 <script setup>

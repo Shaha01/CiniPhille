@@ -1,7 +1,5 @@
 <template>
-  <div class="main">
-    <Catalog type="tv" />
-  </div>
+  <Catalog type="tv" />
 </template>
 
 <script setup>

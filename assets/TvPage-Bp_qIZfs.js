@@ -1,1 +1,0 @@
-import{_ as t}from"./Media-pW-YNAUy.js";import{G as s,c as r,a as c,H as n,o as _}from"./index-D0Bbzomp.js";const m={class:"main"},l={__name:"TvPage",setup(p){const e=n("reload");return s((a,o)=>{e()}),(a,o)=>(_(),r("main",m,[c(t,{type:"tv"})]))}};export{l as default};
