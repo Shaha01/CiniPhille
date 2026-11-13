@@ -1,0 +1,1 @@
+import{_ as t}from"./Media-BrkZY2K8.js";import{C as r,c,D as s,o as _}from"./index-DG44KIFc.js";const f={__name:"MoviePage",setup(n){const e=s("reload");return r((o,a)=>{e()}),(o,a)=>(_(),c(t,{type:"movie"}))}};export{f as default};

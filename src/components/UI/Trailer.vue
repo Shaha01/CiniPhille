@@ -11,10 +11,6 @@
           <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
         </button>
         <div class="modal__panel trailer">
-          <div class="trailer__bar mono">
-            <span class="trailer__rec"><i></i>REPLAY</span>
-            <span class="muted">{{ settings.t('watchTrailer') }}</span>
-          </div>
           <div class="trailer__screen">
             <iframe
               v-if="videoKey"
@@ -111,30 +107,6 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   background: var(--bg-2);
   overflow: hidden;
   box-shadow: 0 40px 120px -30px rgba(255, 42, 61, .45);
-
-  &__bar {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 12px 18px;
-    border-bottom: 1px solid var(--line);
-  }
-
-  &__rec {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--neon);
-
-    i {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--neon);
-      box-shadow: 0 0 8px var(--neon);
-      animation: blink 1.2s infinite;
-    }
-  }
 
   &__screen {
     aspect-ratio: 16 / 9;
