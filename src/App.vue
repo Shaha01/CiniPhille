@@ -20,7 +20,12 @@
       </nav>
     </div>
     <div class="wrap footer__bottom mono">
-      <span>© {{ year }} CiniPhile</span>
+      <span>© {{ year }} SHA · CiniPhile</span>
+      <a class="credit" href="https://shaha01.github.io/Shakhriyor/" target="_blank" rel="noopener">
+        <span class="credit__label">{{ settings.t('footerCredit') }}</span>
+        <span class="credit__name">Abrorov Shahriyor</span>
+        <span class="credit__stripes" aria-hidden="true"><i></i><i></i><i></i></span>
+      </a>
       <a href="https://www.themoviedb.org/" target="_blank" rel="noopener">{{ settings.t('footerData') }}</a>
       <button type="button" class="footer__top" @click="scrollToTop">{{ settings.t('toTop') }} ↑</button>
     </div>
@@ -153,11 +158,14 @@ provide('reload', reload);
     flex-wrap: wrap;
     gap: 12px 24px;
     padding-top: 20px;
+    align-items: center;
     padding-bottom: 28px;
     border-top: 1px solid var(--line);
     color: var(--muted);
 
-    a:hover, button:hover { color: var(--text); }
+    > a:not(.credit):hover, button:hover { color: var(--text); }
+
+    @media (max-width: 760px) { justify-content: center; text-align: center; }
   }
 
   &__top {
@@ -166,6 +174,54 @@ provide('reload', reload);
     text-transform: inherit;
     color: inherit;
   }
+}
+
+.credit {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  border: 1px solid var(--line-2);
+  border-radius: 10px;
+  background: rgba(5, 5, 6, .6);
+  font-size: 11px;
+  transition: border-color .3s, box-shadow .3s;
+
+  &__label { color: var(--muted); }
+
+  &__name {
+    font-family: var(--f-display);
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: -.01em;
+    text-transform: none;
+    color: var(--text);
+    transform: skew(-9deg);
+  }
+
+  &__stripes {
+    display: inline-flex;
+    gap: 3px;
+
+    i {
+      width: 3px;
+      height: 13px;
+      border-radius: 1px;
+      transform: skew(-20deg);
+      transition: transform .45s var(--ease);
+
+      &:nth-child(1) { background: var(--neon); box-shadow: 0 0 6px var(--neon); }
+      &:nth-child(2) { background: var(--yellow); }
+      &:nth-child(3) { background: var(--blue); }
+    }
+  }
+
+  &:hover {
+    border-color: var(--neon);
+    box-shadow: 0 0 20px -4px rgba(255, 42, 61, .6);
+  }
+
+  &:hover &__stripes i { transform: skew(-20deg) translate(3px) scaleY(1.15); }
 }
 
 .to-top {
